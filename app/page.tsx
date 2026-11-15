@@ -1,22 +1,32 @@
 "use client";
 
+type TaskStatus = "pending" | "completed";
+
 type Task = {
   id: string;
   title: string;
   description?: string;
   dueAt?: string;
+  status: TaskStatus;
+};
+
+const STATUS_LABELS: Record<TaskStatus, string> = {
+  pending: "Pendientes",
+  completed: "Completadas",
 };
 
 const SAMPLE_TASKS: Task[] = [
   {
     id: "1",
     title: "Comprar pan",
+    status: "pending",
   },
   {
     id: "2",
     title: "Terminar el challenge",
     description: "To-do list en Next.js",
     dueAt: "2026-11-20T18:00",
+    status: "completed",
   },
 ];
 
@@ -45,11 +55,20 @@ function TaskList({ title, tasks }: TaskListProps) {
 
 export default function Home() {
   const tasks = SAMPLE_TASKS;
+  const statuses = Object.keys(STATUS_LABELS) as TaskStatus[];
 
   return (
-    <main className="mx-auto max-w-xl p-8">
+    <main className="mx-auto max-w-4xl p-8">
       <h1 className="text-2xl font-bold mb-6">Mis tareas</h1>
-      <TaskList title="Tareas" tasks={tasks} />
+      <div className="grid gap-6 md:grid-cols-2">
+        {statuses.map((status) => (
+          <TaskList
+            key={status}
+            title={STATUS_LABELS[status]}
+            tasks={tasks.filter((task) => task.status === status)}
+          />
+        ))}
+      </div>
     </main>
   );
 }

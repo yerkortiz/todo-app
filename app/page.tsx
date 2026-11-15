@@ -1,21 +1,12 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import TaskForm, { type TaskFormValues } from "@/components/TaskForm";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import TaskDialog from "@/components/TaskDialog";
+import type { TaskFormValues } from "@/components/TaskForm";
 import TaskList from "@/components/TaskList";
-import {
-  getServerSnapshot,
-  getSnapshot,
-  parseTasks,
-  saveTasks,
-  subscribe,
-} from "@/lib/taskStorage";
-import {
-  addTask,
-  deleteTask,
-  toggleTaskStatus,
-  type TaskStatus,
-} from "@/lib/tasks";
+import type { TaskStatus } from "@/lib/tasks";
+import { useTasks } from "@/lib/useTasks";
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
   pending: "Pending",
@@ -23,23 +14,13 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
 };
 
 export default function Home() {
-  const stored = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
-  const isLoading = stored === undefined;
-  const tasks = parseTasks(stored);
+  const { tasks, isLoading, createTask, toggleTask, deleteTask } = useTasks();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const statuses = Object.keys(STATUS_LABELS) as TaskStatus[];
 
   function handleCreate(values: TaskFormValues) {
-    saveTasks(
-      addTask(tasks, { id: crypto.randomUUID(), ...values, status: "pending" }),
-    );
-  }
-
-  function handleToggle(id: string) {
-    saveTasks(toggleTaskStatus(tasks, id));
+    createTask(values);
+    setIsDialogOpen(false);
   }
 
   function handleDelete(id: string) {
@@ -54,14 +35,21 @@ export default function Home() {
       return;
     }
 
-    saveTasks(deleteTask(tasks, id));
+    deleteTask(id);
   }
 
   return (
     <main className="mx-auto w-full max-w-4xl p-8">
-      <h1 className="mb-6 text-2xl font-bold">My tasks</h1>
-      <div className="mb-6">
-        <TaskForm onSubmit={handleCreate} />
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">My tasks</h1>
+        <button
+          type="button"
+          onClick={() => setIsDialogOpen(true)}
+          className="flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-white dark:bg-white dark:text-gray-900"
+        >
+          <Plus size={16} aria-hidden="true" />
+          New task
+        </button>
       </div>
       {!isLoading && (
         <div className="grid gap-6 md:grid-cols-2">
@@ -70,11 +58,17 @@ export default function Home() {
               key={status}
               title={STATUS_LABELS[status]}
               tasks={tasks.filter((task) => task.status === status)}
-              onToggle={handleToggle}
+              onToggle={toggleTask}
               onDelete={handleDelete}
             />
           ))}
         </div>
+      )}
+      {isDialogOpen && (
+        <TaskDialog
+          onSubmit={handleCreate}
+          onClose={() => setIsDialogOpen(false)}
+        />
       )}
     </main>
   );

@@ -16,11 +16,7 @@ export default function TaskDialog({ onSubmit, onClose }: TaskDialogProps) {
   }, []);
 
   return (
-    <dialog
-      ref={dialogRef}
-      onClose={onClose}
-      className="m-auto w-full max-w-md rounded-xl bg-white p-6 text-gray-900 backdrop:bg-black/50 dark:bg-gray-900 dark:text-gray-100"
-    >
+    <dialog ref={dialogRef} onClose={onClose} className="dialog">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">New task</h2>
         <button

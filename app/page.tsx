@@ -45,7 +45,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setIsDialogOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-white dark:bg-white dark:text-gray-900"
+          className="btn-primary"
         >
           <Plus size={16} aria-hidden="true" />
           New task

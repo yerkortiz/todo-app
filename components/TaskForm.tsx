@@ -10,9 +10,6 @@ type TaskFormProps = {
   onSubmit: (values: TaskFormValues) => void;
 };
 
-const inputClassName =
-  "rounded-lg border border-gray-300 bg-transparent px-3 py-2 dark:border-gray-700 dark:[color-scheme:dark]";
-
 function readField(data: FormData, name: string) {
   return String(data.get(name) ?? "").trim();
 }
@@ -39,26 +36,23 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
         placeholder="Task title"
         required
         autoFocus
-        className={inputClassName}
+        className="input"
       />
       <textarea
         name="description"
         aria-label="Description"
         placeholder="Description (optional)"
         rows={3}
-        className={inputClassName}
+        className="input"
       />
       <div className="flex gap-2">
         <input
           type="datetime-local"
           name="deadline"
           aria-label="Deadline"
-          className={`flex-1 ${inputClassName}`}
+          className="input flex-1"
         />
-        <button
-          type="submit"
-          className="rounded-lg bg-gray-900 px-4 py-2 text-white dark:bg-white dark:text-gray-900"
-        >
+        <button type="submit" className="btn-primary">
           Add
         </button>
       </div>

@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# To-do list
 
-## Getting Started
+A to-do list built with Next.js and React. Tasks can be created, edited, completed and deleted, and are persisted in `localStorage`.
 
-First, run the development server:
+## 1. Dependencies
+
+- [Node.js](https://nodejs.org/) LTS and npm
+- **Runtime:** `next`, `react`, `react-dom`, `lucide-react` (icons)
+- **Development:** `typescript`, `tailwindcss`, `eslint`, `vitest`
+
+## 2. How to run
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 3. How to test
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+```
 
-## Learn More
+Tests just cover the task domain logic in `lib/tasks.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+## 4. Data model (tasks)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+type TaskStatus = "pending" | "completed";
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+type Task = {
+  id: string;           // crypto.randomUUID()
+  title: string;        // required
+  description?: string; // optional
+  deadline?: string;    // optional, local date and time, e.g. "2026-11-20T18:00"
+  status: TaskStatus;   // pending | completed
+};
+```
 
-## Deploy on Vercel
+- Tasks are stored as a JSON array under the `tasks` key in `localStorage`.
+- `status` is a union instead of a boolean so new states can be added in one place.
+- `deadline` keeps the value of `<input type="datetime-local">` as is (local time, no timezone), which is enough for a single-device app.
+- Deleting removes the task from the list; there is no soft delete.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 5. Dir structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  page.tsx           Page: columns by status, dialog state, delete confirmation
+components/
+  TaskDialog.tsx     Native <dialog> used to create and edit tasks
+  TaskForm.tsx       Title, description and deadline fields
+  TaskList.tsx       A column of tasks (TaskItem is internal to this file)
+lib/
+  tasks.ts           Task types and pure state transitions
+  tasks.test.ts      Unit tests for the transitions
+  useTasks.ts        Hook that reads and saves tasks in localStorage
+```

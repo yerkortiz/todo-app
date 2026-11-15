@@ -17,6 +17,9 @@ export default function Home() {
   const { tasks, isLoading, createTask, toggleTask, deleteTask } = useTasks();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const statuses = Object.keys(STATUS_LABELS) as TaskStatus[];
+  const completedCount = tasks.filter(
+    (task) => task.status === "completed",
+  ).length;
 
   function handleCreate(values: TaskFormValues) {
     createTask(values);
@@ -41,7 +44,15 @@ export default function Home() {
   return (
     <main className="mx-auto w-full max-w-4xl p-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">My tasks</h1>
+        <div>
+          <h1 className="text-2xl font-bold">My tasks</h1>
+          {!isLoading && (
+            <p className="text-sm text-gray-500">
+              {completedCount} of {tasks.length}{" "}
+              {tasks.length === 1 ? "task" : "tasks"} completed
+            </p>
+          )}
+        </div>
         <button
           type="button"
           onClick={() => setIsDialogOpen(true)}

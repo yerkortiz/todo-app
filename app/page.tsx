@@ -1,8 +1,8 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
 import { useSyncExternalStore } from "react";
-import TaskForm, { type TaskFormValues } from "@/components/taskForm";
+import TaskForm, { type TaskFormValues } from "@/components/TaskForm";
+import TaskList from "@/components/TaskList";
 import {
   getServerSnapshot,
   getSnapshot,
@@ -14,7 +14,6 @@ import {
   addTask,
   deleteTask,
   toggleTaskStatus,
-  type Task,
   type TaskStatus,
 } from "@/lib/tasks";
 
@@ -22,84 +21,6 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
   pending: "Pending",
   completed: "Completed",
 };
-
-function formatDeadline(deadline: string) {
-  return new Date(deadline).toLocaleString("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
-type TaskListProps = {
-  title: string;
-  tasks: Task[];
-  onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
-};
-
-function TaskList({ title, tasks, onToggle, onDelete }: TaskListProps) {
-  return (
-    <section className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
-      <h2>{title}</h2>
-      {tasks.length === 0 ? (
-        <p className="text-sm text-gray-500">No tasks yet.</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {tasks.map((task) => (
-            <li
-              key={task.id}
-              className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
-            >
-              <dl className="flex flex-col gap-2">
-                <div>
-                  <dt className="text-xs text-gray-500">Title</dt>
-                  <dd
-                    className={`font-medium ${
-                      task.status === "completed"
-                        ? "text-gray-500 line-through"
-                        : ""
-                    }`}
-                  >
-                    {task.title}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500">Description</dt>
-                  <dd className="text-sm">{task.description ?? "—"}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-gray-500">Deadline</dt>
-                  <dd className="text-sm">
-                    {task.deadline ? formatDeadline(task.deadline) : "—"}
-                  </dd>
-                </div>
-              </dl>
-              <div className="flex flex-col items-start gap-2">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    className="accent-green-600"
-                    checked={task.status === "completed"}
-                    onChange={() => onToggle(task.id)}
-                  />
-                  Completed
-                </label>
-                <button
-                  type="button"
-                  className="flex items-center gap-2 text-sm text-red-600 hover:underline"
-                  onClick={() => onDelete(task.id)}
-                >
-                  <Trash2 size={16} aria-hidden="true" />
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
 
 export default function Home() {
   const stored = useSyncExternalStore(

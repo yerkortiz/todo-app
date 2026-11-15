@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Check, RotateCcw, Trash2 } from "lucide-react";
 import type { Task } from "@/lib/tasks";
 
 function formatDeadline(deadline: string) {
@@ -7,6 +7,9 @@ function formatDeadline(deadline: string) {
     timeStyle: "short",
   });
 }
+
+const buttonClassName =
+  "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors";
 
 type TaskItemProps = {
   task: Task;
@@ -43,19 +46,26 @@ function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
           </dd>
         </div>
       </dl>
-      <div className="flex flex-col items-start gap-2">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="accent-green-600"
-            checked={isCompleted}
-            onChange={() => onToggle(task.id)}
-          />
-          Completed
-        </label>
+      <div className="flex items-center justify-between">
         <button
           type="button"
-          className="flex items-center gap-2 text-sm text-red-600 hover:underline"
+          className={`${buttonClassName} ${
+            isCompleted
+              ? "border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              : "border-green-600 text-green-700 hover:bg-green-50 dark:border-green-500 dark:text-green-400 dark:hover:bg-green-950"
+          }`}
+          onClick={() => onToggle(task.id)}
+        >
+          {isCompleted ? (
+            <RotateCcw size={16} aria-hidden="true" />
+          ) : (
+            <Check size={16} aria-hidden="true" />
+          )}
+          {isCompleted ? "Mark as pending" : "Mark as completed"}
+        </button>
+        <button
+          type="button"
+          className={`${buttonClassName} border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950`}
           onClick={() => onDelete(task.id)}
         >
           <Trash2 size={16} aria-hidden="true" />

@@ -51,7 +51,7 @@ function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
             checked={isCompleted}
             onChange={() => onToggle(task.id)}
           />
-          Mark as completed
+          {isCompleted ? "Completed" : "Mark as completed"}
         </label>
         <button
           type="button"

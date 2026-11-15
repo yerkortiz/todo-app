@@ -18,7 +18,7 @@ function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
   const isCompleted = task.status === "completed";
 
   return (
-    <li className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+    <li className="card flex flex-col gap-3">
       <dl className="flex flex-col gap-2">
         <div>
           <dt className="text-xs text-gray-500">Title</dt>
@@ -44,7 +44,7 @@ function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
         </div>
       </dl>
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 rounded-lg border border-gray-500/40 px-3 py-1.5 text-sm font-medium hover:bg-gray-500/10 cursor-pointer">
+        <label className="btn cursor-pointer">
           <input
             type="checkbox"
             className="accent-green-600"
@@ -55,7 +55,7 @@ function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
         </label>
         <button
           type="button"
-          className="flex items-center gap-2 rounded-lg border border-gray-500/40 px-3 py-1.5 text-sm font-medium hover:bg-gray-500/10 text-red-500"
+          className="btn text-red-500"
           onClick={() => onDelete(task.id)}
         >
           <Trash2 size={16} aria-hidden="true" />
@@ -80,7 +80,7 @@ export default function TaskList({
   onDelete,
 }: TaskListProps) {
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
+    <section className="panel flex flex-col gap-3">
       <h2 className="font-semibold">
         {title} <span className="text-gray-500">({tasks.length})</span>
       </h2>

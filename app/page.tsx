@@ -6,29 +6,36 @@ type Task = {
   id: string;
   title: string;
   description?: string;
-  dueAt?: string;
+  deadline?: string;
   status: TaskStatus;
 };
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
-  pending: "Pendientes",
-  completed: "Completadas",
+  pending: "Pending",
+  completed: "Completed",
 };
 
 const SAMPLE_TASKS: Task[] = [
   {
     id: "1",
-    title: "Comprar pan",
+    title: "Buy bread",
     status: "pending",
   },
   {
     id: "2",
-    title: "Terminar el challenge",
-    description: "To-do list en Next.js",
-    dueAt: "2026-11-20T18:00",
+    title: "Finish the challenge",
+    description: "To-do list in Next.js",
+    deadline: "2026-11-20T18:00",
     status: "completed",
   },
 ];
+
+function formatDeadline(deadline: string) {
+  return new Date(deadline).toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
 
 type TaskListProps = {
   title: string;
@@ -45,7 +52,22 @@ function TaskList({ title, tasks }: TaskListProps) {
             key={task.id}
             className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
           >
-            {task.title}
+            <dl className="flex flex-col gap-2">
+              <div>
+                <dt className="text-xs text-gray-500">Title</dt>
+                <dd className="font-medium">{task.title}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500">Description</dt>
+                <dd className="text-sm">{task.description ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-gray-500">Deadline</dt>
+                <dd className="text-sm">
+                  {task.deadline ? formatDeadline(task.deadline) : "—"}
+                </dd>
+              </div>
+            </dl>
           </li>
         ))}
       </ul>
@@ -59,7 +81,7 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-4xl p-8">
-      <h1 className="text-2xl font-bold mb-6">Mis tareas</h1>
+      <h1 className="mb-6 text-2xl font-bold">My tasks</h1>
       <div className="grid gap-6 md:grid-cols-2">
         {statuses.map((status) => (
           <TaskList

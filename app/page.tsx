@@ -1,7 +1,8 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { useSyncExternalStore, type SubmitEvent } from "react";
+import { useSyncExternalStore } from "react";
+import TaskForm, { type TaskFormValues } from "@/components/taskForm";
 import {
   getServerSnapshot,
   getSnapshot,
@@ -27,46 +28,6 @@ function formatDeadline(deadline: string) {
     dateStyle: "medium",
     timeStyle: "short",
   });
-}
-
-type TaskFormValues = {
-  title: string;
-};
-
-type TaskFormProps = {
-  onSubmit: (values: TaskFormValues) => void;
-};
-
-function TaskForm({ onSubmit }: TaskFormProps) {
-  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const title = String(new FormData(form).get("title") ?? "").trim();
-    if (!title) return;
-
-    onSubmit({ title });
-    form.reset();
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        name="title"
-        aria-label="Title"
-        placeholder="Task title"
-        required
-        pattern=".*\S.*"
-        title="The title can't be empty"
-        className="flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 dark:border-gray-700"
-      />
-      <button
-        type="submit"
-        className="rounded-lg bg-gray-900 px-4 py-2 text-white dark:bg-white dark:text-gray-900"
-      >
-        Add
-      </button>
-    </form>
-  );
 }
 
 type TaskListProps = {

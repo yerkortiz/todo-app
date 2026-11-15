@@ -4,21 +4,6 @@ import { addTask, deleteTask, toggleTaskStatus, type Task } from "@/lib/tasks";
 const STORAGE_KEY = "tasks";
 const listeners = new Set<() => void>();
 
-const SAMPLE_TASKS: Task[] = [
-  {
-    id: "1",
-    title: "Buy bread",
-    status: "pending",
-  },
-  {
-    id: "2",
-    title: "Finish the challenge",
-    description: "To-do list in Next.js",
-    deadline: "2026-11-20T18:00",
-    status: "completed",
-  },
-];
-
 function subscribe(listener: () => void) {
   listeners.add(listener);
   window.addEventListener("storage", listener);
@@ -42,7 +27,7 @@ function saveTasks(tasks: Task[]) {
 }
 
 function parseTasks(stored: string | null | undefined): Task[] {
-  if (!stored) return SAMPLE_TASKS;
+  if (!stored) return [];
   try {
     return JSON.parse(stored);
   } catch {

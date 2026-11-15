@@ -1,6 +1,6 @@
 # To-do list
 
-A to-do list built with Next.js and React. Tasks can be created, edited, completed and deleted, and are persisted in `localStorage`.
+A to-do list built with Next.js and React. Tasks can be created, completed and deleted, and are persisted in `localStorage`.
 
 ## 1. Dependencies
 
@@ -50,7 +50,7 @@ type Task = {
 app/
   page.tsx           Page: columns by status, dialog state, delete confirmation
 components/
-  TaskDialog.tsx     Native <dialog> used to create and edit tasks
+  TaskDialog.tsx     Native <dialog> used to create tasks
   TaskForm.tsx       Title, description and deadline fields
   TaskList.tsx       A column of tasks (TaskItem is internal to this file)
 lib/

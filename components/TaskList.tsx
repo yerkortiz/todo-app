@@ -81,7 +81,9 @@ export default function TaskList({
 }: TaskListProps) {
   return (
     <section className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
-      <h2>{title}</h2>
+      <h2 className="font-semibold">
+        {title} <span className="text-gray-500">({tasks.length})</span>
+      </h2>
       {tasks.length === 0 ? (
         <p className="text-sm text-gray-500">No tasks yet.</p>
       ) : (

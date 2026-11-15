@@ -20,8 +20,7 @@ function readField(data: FormData, name: string) {
 export default function TaskForm({ onSubmit }: TaskFormProps) {
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
+    const data = new FormData(event.currentTarget);
     const title = readField(data, "title");
     if (!title) return;
 
@@ -30,7 +29,6 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
       description: readField(data, "description") || undefined,
       deadline: readField(data, "deadline") || undefined,
     });
-    form.reset();
   }
 
   return (
@@ -40,13 +38,14 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
         aria-label="Title"
         placeholder="Task title"
         required
+        autoFocus
         className={inputClassName}
       />
       <textarea
         name="description"
         aria-label="Description"
         placeholder="Description (optional)"
-        rows={2}
+        rows={3}
         className={inputClassName}
       />
       <div className="flex gap-2">

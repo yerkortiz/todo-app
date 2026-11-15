@@ -2,77 +2,25 @@
 
 import { Trash2 } from "lucide-react";
 import { useSyncExternalStore, type SubmitEvent } from "react";
-
-type TaskStatus = "pending" | "completed";
-
-type Task = {
-  id: string;
-  title: string;
-  description?: string;
-  deadline?: string;
-  status: TaskStatus;
-};
+import {
+  getServerSnapshot,
+  getSnapshot,
+  parseTasks,
+  saveTasks,
+  subscribe,
+} from "@/lib/taskStorage";
+import {
+  addTask,
+  deleteTask,
+  toggleTaskStatus,
+  type Task,
+  type TaskStatus,
+} from "@/lib/tasks";
 
 const STATUS_LABELS: Record<TaskStatus, string> = {
   pending: "Pending",
   completed: "Completed",
 };
-
-const SAMPLE_TASKS: Task[] = [
-  {
-    id: "1",
-    title: "Buy bread",
-    status: "pending",
-  },
-  {
-    id: "2",
-    title: "Finish the challenge",
-    description: "To-do list in Next.js",
-    deadline: "2026-11-20T18:00",
-    status: "completed",
-  },
-];
-
-const STORAGE_KEY = "tasks";
-const listeners = new Set<() => void>();
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  window.addEventListener("storage", listener);
-  return () => {
-    listeners.delete(listener);
-    window.removeEventListener("storage", listener);
-  };
-}
-
-function getSnapshot() {
-  return localStorage.getItem(STORAGE_KEY);
-}
-
-function getServerSnapshot() {
-  return undefined;
-}
-
-function saveTasks(tasks: Task[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-  listeners.forEach((listener) => listener());
-}
-
-function addTask(tasks: Task[], task: Task): Task[] {
-  return [...tasks, task];
-}
-
-function toggleTaskStatus(tasks: Task[], id: string): Task[] {
-  return tasks.map((task): Task =>
-    task.id === id
-      ? { ...task, status: task.status === "pending" ? "completed" : "pending" }
-      : task,
-  );
-}
-
-function deleteTask(tasks: Task[], id: string): Task[] {
-  return tasks.filter((task) => task.id !== id);
-}
 
 function formatDeadline(deadline: string) {
   return new Date(deadline).toLocaleString("en-US", {
@@ -199,7 +147,7 @@ export default function Home() {
     getServerSnapshot,
   );
   const isLoading = stored === undefined;
-  const tasks: Task[] = stored ? JSON.parse(stored) : SAMPLE_TASKS;
+  const tasks = parseTasks(stored);
   const statuses = Object.keys(STATUS_LABELS) as TaskStatus[];
 
   function handleCreate(values: TaskFormValues) {
